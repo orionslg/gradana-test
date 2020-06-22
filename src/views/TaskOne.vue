@@ -1,10 +1,16 @@
 <template>
-  <div></div>
+  <b-container>
+    <Form></Form>
+  </b-container>
 </template>
 
 <script>
-export default {};
+import Form from "../components/Form";
+export default {
+  components: {
+    Form: Form
+  }
+};
 </script>
 
-<style>
-</style>
+<style></style>
