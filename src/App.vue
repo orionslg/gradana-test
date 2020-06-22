@@ -8,9 +8,15 @@
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item>Task 1</b-nav-item>
-            <b-nav-item>Task 2</b-nav-item>
-            <b-nav-item>Task 3</b-nav-item>
+            <b-nav-item>
+              <router-link to="/task1" class="nav-link">Task 1</router-link>
+            </b-nav-item>
+            <b-nav-item>
+              <router-link to="/task2" class="nav-link">Task 2</router-link>
+            </b-nav-item>
+            <b-nav-item>
+              <router-link to="/task3" class="nav-link">Task 3</router-link>
+            </b-nav-item>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
