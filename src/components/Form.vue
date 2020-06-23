@@ -1,5 +1,5 @@
 <template>
-  <b-form class="mt-5">
+  <b-form class="mt-5" @submit="submitData">
     <b-form-row align-h="center">
       <b-col>
         <b-form-group id="input-group-1" label="First Name" label-for="input-1">
@@ -90,7 +90,11 @@
         </b-form-group>
       </b-col>
     </b-form-row>
-    <b-button type="submit" variant="primary">Submit</b-button>
+    <b-button type="submit" variant="primary">
+      <b-spinner small v-if="isLoading"></b-spinner>
+      <span v-if="!isLoading">Submit</span>
+      <span v-else>Submiting...</span>
+    </b-button>
   </b-form>
 </template>
 
@@ -118,11 +122,50 @@ export default {
         constituency: [],
         village: []
       },
-      maxDate: new Date(today)
+      maxDate: new Date(today),
+      isLoading: false,
+      error: ""
     };
   },
   methods: {
-    submitData() {}
+    submitData(e) {
+      e.preventDefault();
+      this.isLoading = true;
+      axios({
+        url: process.env.VUE_APP_URL_MOCK,
+        method: "POST",
+        data: {
+          firstName: this.userData.firstName,
+          lastName: this.userData.lastName,
+          dateOfBirth: this.userData.dateOfBirth,
+          salary: this.userData.salary,
+          province: this.province,
+          district: this.district,
+          village: this.village
+        }
+      })
+        .then(() => {})
+        .catch(err => {
+          this.error = err.response;
+        })
+        .finally(() => {
+          alert(`
+            First Name: ${this.userData.firstName}
+            Last Name: ${this.userData.lastName}
+            Date of Birth: ${this.userData.dateOfBirth}
+            Province: ${this.mockProvince}
+            District: ${this.mockDistrict}
+            Constituency: ${this.mockConstituency}
+            Village: ${this.mockvillage}
+            Salary: ${this.userData.salary}
+          `);
+          this.isLoading = false;
+        });
+    },
+    filterName(arr, id) {
+      const name = arr.filter(el => el.id === id);
+      return name.length && name[0].name;
+    }
   },
   watch: {
     province: function(value) {
@@ -149,6 +192,23 @@ export default {
         .then(({ data }) => {
           this.locationApi.village = data.data;
         });
+    }
+  },
+  computed: {
+    mockProvince: function() {
+      const name = this.locationApi.provinces.filter(
+        el => el.id === this.province
+      );
+      return name.length && name[0].name;
+    },
+    mockDistrict: function() {
+      return this.filterName(this.locationApi.districts, this.district);
+    },
+    mockConstituency: function() {
+      return this.filterName(this.locationApi.constituency, this.constituency);
+    },
+    mockvillage: function() {
+      return this.filterName(this.locationApi.village, this.village);
     }
   },
   created() {
