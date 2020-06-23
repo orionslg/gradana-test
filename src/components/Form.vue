@@ -90,7 +90,7 @@
         </b-form-group>
       </b-col>
     </b-form-row>
-    <b-button type="submit" variant="primary">
+    <b-button :disabled="!disableSubmit()" type="submit" variant="primary">
       <b-spinner small v-if="isLoading"></b-spinner>
       <span v-if="!isLoading">Submit</span>
       <span v-else>Submiting...</span>
@@ -128,9 +128,24 @@ export default {
     };
   },
   methods: {
+    disableSubmit() {
+      const userData = this.userData;
+      return userData.firstName &&
+        userData.lastName &&
+        userData.dateOfBirth &&
+        userData.dateOfBirth &&
+        userData.salary &&
+        this.province &&
+        this.district &&
+        this.constituency &&
+        this.village
+        ? true
+        : false;
+    },
     submitData(e) {
       e.preventDefault();
       this.isLoading = true;
+
       axios({
         url: process.env.VUE_APP_URL_MOCK,
         method: "POST",
